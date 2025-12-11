@@ -1,0 +1,7 @@
+{
+  "name": "NutriScan AI",
+  "description": "Instantly identify food and analyze nutritional content using AI vision.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
