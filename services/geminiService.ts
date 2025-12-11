@@ -1,8 +1,11 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { FoodAnalysis } from "../types";
 
-// Initialize Gemini Client
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Initialize Gemini Client safely
+// This prevents immediate crash if 'process' is not defined (e.g. running locally in a vanilla browser)
+const apiKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : '';
+
+const ai = new GoogleGenAI({ apiKey });
 
 export const analysisSchema: Schema = {
   type: Type.OBJECT,
@@ -47,6 +50,10 @@ export const analysisSchema: Schema = {
  * @param mimeType The mime type of the image (e.g., 'image/jpeg')
  */
 export const analyzeFoodImage = async (base64Image: string, mimeType: string = 'image/jpeg'): Promise<FoodAnalysis> => {
+  if (!apiKey) {
+    throw new Error("API Key is missing. If running locally, ensure process.env.API_KEY is configured or use the Integration Code view to learn more.");
+  }
+
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
